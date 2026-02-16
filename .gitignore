@@ -1,0 +1,10 @@
+node_modules
+.env
+.env.*
+!.env.example
+dist
+tsconfig.json
+/generated/prisma
+/prisma/migrations
+
+/src/generated/prisma
