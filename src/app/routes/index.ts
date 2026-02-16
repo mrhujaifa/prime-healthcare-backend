@@ -9,4 +9,6 @@ router.use("/auth", AuthRoutes);
 router.use("/specialties", SpecialtyRoutes);
 router.use("/users", UserRoutes);
 
+// check message git development
+
 export const IndexRoutes = router;
