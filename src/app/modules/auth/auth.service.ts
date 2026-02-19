@@ -1,7 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import status from "http-status";
 import { UserStatus } from "../../../generated/prisma/enums";
+import AppError from "../../errorHelper/AppError";
 import { auth } from "../../lib/auth";
 import { prisma } from "../../lib/prisma";
+import { tokenUtils } from "../../utils/token";
 
 interface IRegisterPatient {
   name: string;
@@ -21,7 +24,7 @@ const registerPatient = async (payload: IRegisterPatient) => {
   });
 
   if (!createUser.user) {
-    throw new Error("Failed to Register Patient");
+    throw new AppError(status.BAD_REQUEST, "Failed to Register Patient");
   }
 
   try {
@@ -35,7 +38,25 @@ const registerPatient = async (payload: IRegisterPatient) => {
       });
       return patientTx;
     });
+
+    const accessToken = tokenUtils.getAccessToken({
+      userId: createUser.user.id,
+      email: createUser.user.email,
+      role: createUser.user.role,
+      status: createUser.user.status,
+      isDeleted: createUser.user.isDeleted,
+    });
+    const refreshToken = tokenUtils.getRefreshToken({
+      userId: createUser.user.id,
+      email: createUser.user.email,
+      role: createUser.user.role,
+      status: createUser.user.status,
+      isDeleted: createUser.user.isDeleted,
+    });
+
     return {
+      accessToken,
+      refreshToken,
       ...createUser,
       patient,
     };
@@ -64,22 +85,41 @@ const loginUser = async (payload: ILoginUserPayload) => {
     },
   });
   if (loginUser.user.status === UserStatus.BlOCKED) {
-    throw new Error("User is Blocked");
+    throw new AppError(status.FORBIDDEN, "User is Blocked");
   }
 
   if (loginUser.user.status === UserStatus.SUSPENDED) {
-    throw new Error("User is Suspended");
+    throw new AppError(status.FORBIDDEN, "User is Suspended");
   }
 
   if (loginUser.user.isDeleted) {
-    throw new Error("User is Deleted");
+    throw new AppError(status.NOT_FOUND, "User is Deleted");
   }
 
   if (!loginUser.user) {
-    throw new Error("Failed to Login User");
+    throw new AppError(status.UNAUTHORIZED, "Failed to Login User");
   }
 
-  return loginUser.user;
+  const accessToken = tokenUtils.getAccessToken({
+    userId: loginUser.user.id,
+    email: loginUser.user.email,
+    role: loginUser.user.role,
+    status: loginUser.user.status,
+    isDeleted: loginUser.user.isDeleted,
+  });
+  const refreshToken = tokenUtils.getRefreshToken({
+    userId: loginUser.user.id,
+    email: loginUser.user.email,
+    role: loginUser.user.role,
+    status: loginUser.user.status,
+    isDeleted: loginUser.user.isDeleted,
+  });
+
+  return {
+    ...loginUser,
+    accessToken,
+    refreshToken,
+  };
 };
 
 export const AuthService = {
