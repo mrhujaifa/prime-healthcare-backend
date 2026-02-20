@@ -1,0 +1,17 @@
+model Review {
+  id            String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  patientId     String   @db.Uuid
+  doctorId      String   @db.Uuid
+  appointmentId String   @unique @db.Uuid
+  rating        Float
+  comment       String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Relations
+  doctor      Doctor      @relation(fields: [doctorId], references: [id])
+  patient     Patient     @relation(fields: [patientId], references: [id])
+  appointment appointment @relation(fields: [appointmentId], references: [id])
+
+  @@map("review")
+}

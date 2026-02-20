@@ -2,8 +2,8 @@
 import { JwtPayload, SignOptions } from "jsonwebtoken";
 import { jwtUtils } from "./jwt";
 import { envVars } from "../../config/env";
-import { cookieUtils } from "./cookie";
 import { Response } from "express";
+import { CookieUtils } from "./cookie";
 
 const getAccessToken = (payload: JwtPayload): string => {
   const accessToken = jwtUtils.createToken(
@@ -29,7 +29,7 @@ const getRefreshToken = (payload: JwtPayload): string => {
 
 // set Access token
 const setAccessTokenCookie = (res: any, accessToken: string) => {
-  cookieUtils.setCookie(res, "accessToken", accessToken, {
+  CookieUtils.setCookie(res, "accessToken", accessToken, {
     httpOnly: true,
     secure: true,
     path: "/",
@@ -41,7 +41,7 @@ const setAccessTokenCookie = (res: any, accessToken: string) => {
 
 // set refresh Token on cookie
 const setRefreshTokenCookie = (res: any, refreshToken: string) => {
-  cookieUtils.setCookie(res, "refreshToken", refreshToken, {
+  CookieUtils.setCookie(res, "refreshToken", refreshToken, {
     httpOnly: true,
     secure: true,
     path: "/",
@@ -53,7 +53,7 @@ const setRefreshTokenCookie = (res: any, refreshToken: string) => {
 
 // betterAuthSessionCookie setup
 const betterAuthSessionCookie = (res: Response, token: string) => {
-  cookieUtils.setCookie(res, "better-auth.session_token", token, {
+  CookieUtils.setCookie(res, "better-auth.session_token", token, {
     httpOnly: true,
     secure: true,
     path: "/",
