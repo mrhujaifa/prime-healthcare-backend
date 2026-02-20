@@ -1,6 +1,6 @@
 // Role Enum
 enum Role {
-    SUPERADMIN
+    SUPER_ADMIN
     ADMIN
     DOCTOR
     PATIENT
@@ -11,6 +11,7 @@ enum UserStatus {
     BlOCKED
     SUSPENDED
     ACTIVE
+    DELETED
 }
 
 // User Gender Enum
