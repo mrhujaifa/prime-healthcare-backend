@@ -6,7 +6,7 @@ model Specialty {
     icon        String? @db.VarChar(255)
 
     createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+    updatedAt DateTime @default(now()) @updatedAt
 
     isDeleted         Boolean           @default(false)
     deletedAt         DateTime?
