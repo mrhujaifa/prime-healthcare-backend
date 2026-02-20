@@ -1,32 +1,39 @@
 model Doctor {
-    id                  String    @id @default(uuid(7))
-    name                String
-    email               String    @unique
-    profilePhoto        String?
-    contactNumber       String?
-    address             String?
-    resgistrationNumber String    @unique
-    experience          Int       @default(0)
+    id String @id @default(uuid(7))
+
+    name          String
+    email         String    @unique
+    profilePhoto  String?
+    contactNumber String?
+    address       String?
+    isDeleted     Boolean   @default(false)
+    deletedAt     DateTime?
+
+    registrationNumber  String @unique
+    experience          Int    @default(0)
     gender              Gender
-    appointmentFee      String
+    appointmentFee      Float
+    qualification       String
     currentWorkingPlace String
     designation         String
-    averageRating       Float     @default(0.0)
-    isDeleted           Boolean   @default(false)
-    deletedAt           DateTime?
-    createdAt           DateTime  @default(now())
-    updatedAt           DateTime  @updatedAt
-    //* Relations
-    userId              String    @unique
-    user                User      @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    averageRating       Float  @default(0.0)
 
-    appointments      Appointment[]
-    reviews           Review[]
-    medicalReports    MedicalReport[]
-    doctorSchedules   DoctorSchedules[]
-    doctorSpecialties DoctorSpecialty[]
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    //relations
+
+    userId String @unique
+    user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+    specialties     DoctorSpecialty[]
+    appointments    Appointment[]
+    prescriptions   Prescription[]
+    reviews         Review[]
+    doctorSchedules DoctorSchedules[]
+    medicalReports  MedicalReport[]
 
     @@index([email], name: "idx_doctor_email")
-    @@index([isDeleted], name: "idx_doctor_is_deleted")
+    @@index([isDeleted], name: "idx_doctor_isDeleted")
     @@map("doctor")
 }
