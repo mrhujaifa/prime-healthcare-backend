@@ -33,7 +33,7 @@ const setAccessTokenCookie = (res: any, accessToken: string) => {
     httpOnly: true,
     secure: true,
     path: "/",
-    sameSite: "none",
+    sameSite: envVars.NODE_ENV === "production" ? "none" : "lax",
     // 1 day
     maxAge: 60 * 60 * 60 * 24,
   });
@@ -57,7 +57,7 @@ const betterAuthSessionCookie = (res: Response, token: string) => {
     httpOnly: true,
     secure: true,
     path: "/",
-    sameSite: "none",
+    sameSite: envVars.NODE_ENV === "production" ? "none" : "lax",
     // 1 day
     maxAge: 60 * 60 * 60 * 24,
   });

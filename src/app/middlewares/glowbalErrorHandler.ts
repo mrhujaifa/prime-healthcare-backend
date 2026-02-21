@@ -8,8 +8,9 @@ import { ZodIssue } from "zod/v3";
 import z from "zod";
 import { handleZodError } from "../errorHelper/handleZodError";
 import AppError from "../errorHelper/AppError";
+import { deleteFileFromCloudinary } from "../../config/cloudinary.config";
 
-export const glowbalErrorHandler = (
+export const glowbalErrorHandler = async (
   error: any,
   req: Request,
   res: Response,
@@ -18,6 +19,17 @@ export const glowbalErrorHandler = (
   // Log full error object in development mode to help debugging
   if (envVars.NODE_ENV === "development") {
     console.log("Error from Glowbal Error Handler", error);
+  }
+
+  // if image or file upload any problem or error so delete image or file automatic
+  if (req.file) {
+    await deleteFileFromCloudinary(req.file.path);
+  }
+
+  // if image or file upload any problem or error so delete image or file automatic
+  if (req.files && Array.isArray(req.files) && req.files.length > 0) {
+    const imageUrls = req.files?.map((file) => file.path);
+    await Promise.all(imageUrls.map((url) => deleteFileFromCloudinary(url)));
   }
 
   // Default values for error response
