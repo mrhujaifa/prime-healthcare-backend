@@ -8,7 +8,7 @@ export interface IcreateDoctorPayload {
     profilePhoto?: string;
     contactNumber?: string;
     address?: string;
-    resgistrationNumber: string;
+    registrationNumber: string;
     experience?: number;
     gender: Gender;
     appointmentFee: string;
