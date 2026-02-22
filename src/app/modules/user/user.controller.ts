@@ -45,7 +45,10 @@ const createDoctor = async (payload: IcreateDoctorPayload) => {
       const doctorData = await tx.doctor.create({
         data: {
           userId: userData.user.id,
+
           ...payload.doctor,
+          appointmentFee: parseFloat(payload.doctor.appointmentFee),
+          registrationNumber: payload.doctor.registrationNumber,
         },
       });
       const doctorSpecialties = specialties.map((specialty) => ({
@@ -67,11 +70,11 @@ const createDoctor = async (payload: IcreateDoctorPayload) => {
           profilePhoto: true,
           contactNumber: true,
           address: true,
-          resgistrationNumber: true,
           experience: true,
           gender: true,
           appointmentFee: true,
           currentWorkingPlace: true,
+          registrationNumber: true,
           designation: true,
           averageRating: true,
           user: {
@@ -87,17 +90,6 @@ const createDoctor = async (payload: IcreateDoctorPayload) => {
               image: true,
               isDeleted: true,
               isVerified: true,
-            },
-          },
-          doctorSpecialties: {
-            select: {
-              specialty: {
-                select: {
-                  id: true,
-                  title: true,
-                  description: true,
-                },
-              },
             },
           },
         },

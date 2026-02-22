@@ -21,7 +21,7 @@ export const createDoctorZodSchema = z.object({
       .min(10, "Address must be at least 10 characters long")
       .max(100, "Address must be at most 100 characters long")
       .optional(),
-    resgistrationNumber: z.string("Registration number is required"),
+    registrationNumber: z.string("Registration number is required"),
     experience: z
       .int("Experience must be a intger number")
       .nonnegative("Experince must be a positive number"),
@@ -29,13 +29,15 @@ export const createDoctorZodSchema = z.object({
       [Gender.MALE, Gender.FEMALE, Gender.OTHER],
       "Gender is required",
     ),
-    appointmentFee: z.string("Appointment fee is required"),
+    appointmentFee: z
+      .string("Appointment fee is required")
+      .transform((val) => parseFloat(val)),
     currentWorkingPlace: z.string("Current working place is required"),
     designation: z.string("Designation is required"),
     averageRating: z.number().optional(),
     profilePhoto: z.string().optional(),
   }),
-  specicalties: z
-    .array(z.uuid(), "Specicalties must be an array of uuids string")
-    .min(1, "At least one specicalty is required"),
+  specialties: z
+    .array(z.string(), "Specialties must be an array of uuids string")
+    .min(1, "At least one specialty is required"),
 });

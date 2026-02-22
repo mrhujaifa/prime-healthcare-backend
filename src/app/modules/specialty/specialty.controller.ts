@@ -5,7 +5,12 @@ import { sendResponse } from "../../shared/sendResponse";
 
 //* Create Specialty
 const createSpecialty = catchAsync(async (req: Request, res: Response) => {
-  const payload = req.body;
+  // const payload = req.body;
+
+  const payload = {
+    ...req.body, // data
+    icon: req.file?.path, // image upload path name like img url
+  };
   const result = await SpecialtyService.createSpecialty(payload);
   sendResponse(res, {
     httpStatusCode: 200,
