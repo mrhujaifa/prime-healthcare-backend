@@ -1,6 +1,7 @@
 model Appointment {
     id             String            @id @default(uuid(7))
-    videoCallingId String
+    videoCallingId String            @unique @db.Uuid()
+    stripeEventId  String?           @unique
     status         AppointmentStatus @default(SCHEDULED)
     paymentStatus  PaymentStatus     @default(UNPAID)
     createdAt      DateTime          @default(now())

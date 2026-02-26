@@ -8,8 +8,13 @@ import { auth } from "./app/lib/auth";
 import path from "path";
 import cors from "cors";
 import { envVars } from "./config/env";
+import { PaymentController } from "./app/modules/payment/payment.controller";
+import cron from "node-cron";
+import { AppointmentService } from "./app/modules/appointment/appointment.service";
 
 const app: Application = express();
+
+// Enable CORS middleware
 app.use(
   cors({
     origin: envVars.FRONTEND_URL,
@@ -19,7 +24,19 @@ app.use(
   }),
 );
 
+// Stripe webhook endpoint
+app.use(
+  "/webhook",
+  express.raw({
+    type: "application/json",
+  }),
+  PaymentController.handleStripeWebhookEvent,
+);
+
+// View engine
 app.set("view engine", "ejs");
+
+// Set views directory
 app.set("views", path.resolve(process.cwd(), `src/app/templates`));
 
 app.use("/api/auth", toNodeHandler(auth));
@@ -36,6 +53,15 @@ app.use(cookieParser());
 // All router
 
 app.use("/api/v1", IndexRoutes);
+
+// cron
+cron.schedule("*/25 * * * *", async () => {
+  try {
+    await AppointmentService.canelUnpaidAppointment();
+  } catch (error) {
+    console.log("Error from cron schedule =>>>>>>>", error);
+  }
+});
 
 // Basic route
 app.get("/", (req: Request, res: Response) => {

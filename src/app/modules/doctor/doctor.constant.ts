@@ -22,6 +22,8 @@ export const doctorFilterableFields = [
   "qualification",
   "specialties.specialty.title",
   "user.role",
+  "user.name",
+  "user.email",
 ];
 
 export const doctorIncludeConfig: Partial<
