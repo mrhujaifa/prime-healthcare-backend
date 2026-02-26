@@ -9,6 +9,7 @@ import z from "zod";
 import { handleZodError } from "../errorHelper/handleZodError";
 import AppError from "../errorHelper/AppError";
 import { deleteFileFromCloudinary } from "../../config/cloudinary.config";
+import { deleteUploadedFilesFromGlobalErrorHandler } from "../utils/deleteUploadedFilesFromGlobalErrorHandler";
 
 export const glowbalErrorHandler = async (
   error: any,
@@ -21,16 +22,20 @@ export const glowbalErrorHandler = async (
     console.log("Error from Glowbal Error Handler", error);
   }
 
+  //! basic handle delete file from cloudinary if any upload file error
   // if image or file upload any problem or error so delete image or file automatic
-  if (req.file) {
-    await deleteFileFromCloudinary(req.file.path);
-  }
+  // if (req.file) {
+  //   await deleteFileFromCloudinary(req.file.path);
+  // }
 
   // if image or file upload any problem or error so delete image or file automatic
-  if (req.files && Array.isArray(req.files) && req.files.length > 0) {
-    const imageUrls = req.files?.map((file) => file.path);
-    await Promise.all(imageUrls.map((url) => deleteFileFromCloudinary(url)));
-  }
+  // if (req.files && Array.isArray(req.files) && req.files.length > 0) {
+  //   const imageUrls = req.files?.map((file) => file.path);
+  //   await Promise.all(imageUrls.map((url) => deleteFileFromCloudinary(url)));
+  // }
+
+  //* Cleans up uploaded Cloudinary files if request processing fails.
+  await deleteUploadedFilesFromGlobalErrorHandler(req);
 
   // Default values for error response
   // Will be overwritten if we identify the type of error
